@@ -12,3 +12,12 @@
 [lowbridgee@04/05 20:15:36] curl localhost:8080
 Hello world!%                                                                                                           [lowbridgee@04/05 20:16:11]
 ```
+
+### テンプレートエンジン
+
+https://docs.rs/askama/latest/askama/
+
+```
+cargo add askama
+```
+
