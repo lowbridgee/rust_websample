@@ -21,3 +21,4 @@ https://docs.rs/askama/latest/askama/
 cargo add askama
 ```
 
+結論: deriveマクロよくわからん
