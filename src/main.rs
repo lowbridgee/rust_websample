@@ -1,4 +1,4 @@
-use actix_web::{get, App, HttpResponse, HttpServer, ResponseError, web, http::header, post};
+use actix_web::{get, App, HttpResponse, HttpServer, ResponseError, web::{self, Data}, http::header, post};
 use r2d2::Pool;
 use r2d2_sqlite::SqliteConnectionManager;
 use serde::Deserialize;
@@ -30,13 +30,13 @@ struct DeleteParams {
 #[derive(Error, Debug)]
 enum MyError {
     #[error("Failed to render HTML")]
-    AskamaError(#[from] askama::Error),
+    Askama(#[from] askama::Error),
 
     #[error("Failed to get connection")]
-    ConnectionPoolError(#[from] r2d2::Error),
+    ConnectionPool(#[from] r2d2::Error),
 
     #[error("Failed SQL execution")]
-    SQLiteError(#[from] rusqlite::Error),
+    SQLite(#[from] rusqlite::Error),
 }
 
 impl ResponseError for MyError {}
@@ -72,7 +72,7 @@ async fn add_todo(
     let conn = db.get()?;
     conn.execute("insert into todo (text) values (?)", &[&params.text])?;
     Ok(HttpResponse::SeeOther()
-    .header(header::LOCATION, "/")
+    .append_header((header::LOCATION, "/"))
     .finish())
 }
 
@@ -84,7 +84,7 @@ async fn delete_todo(
     let conn = db.get()?;
     conn.execute("delete from todo where id = ?", &[&params.id])?;
     Ok(HttpResponse::SeeOther()
-        .header(header::LOCATION, "/")
+        .append_header((header::LOCATION, "/"))
         .finish())
 }
 
@@ -107,7 +107,7 @@ async fn main() -> Result<(), actix_web::Error> {
             .service(index)
             .service(add_todo)
             .service(delete_todo)
-            .data(pool.clone())
+            .app_data(Data::new(pool.clone()))
     })
     .bind("0.0.0.0:8080")?
     .run()

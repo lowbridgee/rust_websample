@@ -22,3 +22,16 @@ cargo add askama
 ```
 
 結論: deriveマクロよくわからん
+
+### deprecatedとか警告なくそうぜ～
+
+```
+all variants have the same postfix: `Error`
+`#[warn(clippy::enum_variant_names)]` on by default
+remove the postfixes and use full paths to the variants instead of glob imports
+for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#enum_variant_names
+```
+
+https://rust-lang.github.io/rust-clippy/master/index.html#enum_variant_names
+
+postfix Errorは消したほうがいいとのこと
